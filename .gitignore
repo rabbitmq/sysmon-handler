@@ -1,7 +1,9 @@
 *~
 *.beam
+_build/
 cover/
 *.coverdata
+*.d
 deps
 deps/
 doc/
@@ -11,13 +13,15 @@ doc/*.html
 doc/stylesheet.css
 ebin/
 .erlang.mk/
+erl_crash.dump
 .eunit
 git-revisions.txt
 logs/
-.*.plt
+*.plt
 plugins/
 rebar.config
 rebar.lock
+*.sw?
 .*.sw?
 .sw?
 test/ct.cover.spec

@@ -45,11 +45,7 @@
 -define(SUPPORTED_MONITORS, [gc, heap, port, dist_port]).
 -endif.
 
--ifdef(namespaced_types).
 -type port_list() :: gb_trees:tree().
--else.
--type port_list() :: gb_tree().
--endif.
 
 -record(state, {
           proc_count = 0      :: integer(),
