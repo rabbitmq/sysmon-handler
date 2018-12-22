@@ -15,7 +15,7 @@
 %% specific language governing permissions and limitations
 %% under the License.
 
-%% @doc Riak_sysmon: a rate-limiting, gen_event-based mechanism to
+%% @doc rabbit_sysmon: a rate-limiting, gen_event-based mechanism to
 %% allow multiple parties/processes/applications to share
 %% erlang:system_monitor/2 system events safely.
 

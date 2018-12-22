@@ -84,7 +84,7 @@ end}.
 ]}.
 
 %% @doc Whether distribution ports with full input buffers will be
-%% counted as busy. Distribution ports connect Riak nodes within a
+%% counted as busy. Distribution ports connect RabbitMQ nodes within a
 %% single cluster.
 %% @see runtime_health.thresholds.busy_ports
 {mapping, "runtime_health.triggers.distribution_port", "rabbit_sysmon.busy_dist_port", [
