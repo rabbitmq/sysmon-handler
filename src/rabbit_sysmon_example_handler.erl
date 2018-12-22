@@ -1,4 +1,5 @@
 %% Copyright (c) 2011 Basho Technologies, Inc.  All Rights Reserved.
+%% Copyright (c) 2018 Pivotal Software, Inc.  All rights reserved.
 %%
 %% This file is provided to you under the Apache License,
 %% Version 2.0 (the "License"); you may not use this file
@@ -15,9 +16,9 @@
 %% under the License.
 
 %% @doc A simple example for adding a custom event handler (this module)
-%% to the `riak_sysmon' application's `system_monitor' event manager.
+%% to the `rabbit_sysmon' application's `system_monitor' event manager.
 
--module(riak_sysmon_example_handler).
+-module(rabbit_sysmon_example_handler).
 
 -behaviour(gen_event).
 
@@ -37,10 +38,10 @@
 %%%===================================================================
 
 add_handler() ->
-    riak_sysmon_filter:add_custom_handler(?MODULE, []).
+    rabbit_sysmon_filter:add_custom_handler(?MODULE, []).
 
 get_call_count() ->
-    riak_sysmon_filter:call_custom_handler(?MODULE, get_call_count, infinity).
+    rabbit_sysmon_filter:call_custom_handler(?MODULE, get_call_count, infinity).
 
 %%%===================================================================
 %%% gen_event callbacks

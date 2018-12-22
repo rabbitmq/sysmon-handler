@@ -1,4 +1,5 @@
 %% Copyright (c) 2011 Basho Technologies, Inc.  All Rights Reserved.
+%% Copyright (c) 2018 Pivotal Software, Inc.  All rights reserved.
 %%
 %% This file is provided to you under the Apache License,
 %% Version 2.0 (the "License"); you may not use this file
@@ -14,7 +15,7 @@
 %% specific language governing permissions and limitations
 %% under the License.
 
--module(riak_sysmon_sup).
+-module(rabbit_sysmon_sup).
 
 -behaviour(supervisor).
 
@@ -66,10 +67,10 @@ init([]) ->
     Shutdown = 2000,
     Type = worker,
 
-    Filter = {riak_sysmon_filter, {riak_sysmon_filter, start_link, []},
-              Restart, Shutdown, Type, [riak_sysmon_filter]},
-    Handler = {riak_sysmon_mgr, {gen_event, start_link,
-                                 [{local, riak_sysmon_handler}]},
+    Filter = {rabbit_sysmon_filter, {rabbit_sysmon_filter, start_link, []},
+              Restart, Shutdown, Type, [rabbit_sysmon_filter]},
+    Handler = {rabbit_sysmon_mgr, {gen_event, start_link,
+                                 [{local, rabbit_sysmon_handler}]},
               Restart, Shutdown, Type, []},
 
     {ok, {SupFlags, [Filter, Handler]}}.

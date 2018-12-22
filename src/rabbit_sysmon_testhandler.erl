@@ -1,4 +1,5 @@
 %% Copyright (c) 2011 Basho Technologies, Inc.  All Rights Reserved.
+%% Copyright (c) 2018 Pivotal Software, Inc.  All rights reserved.
 %%
 %% This file is provided to you under the Apache License,
 %% Version 2.0 (the "License"); you may not use this file
@@ -16,7 +17,7 @@
 
 %% @doc Support for EUnit testing: simple event-collecting event handler.
 
--module(riak_sysmon_testhandler).
+-module(rabbit_sysmon_testhandler).
 
 -ifdef(TEST).
 

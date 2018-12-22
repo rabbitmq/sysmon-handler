@@ -1,4 +1,5 @@
 %% Copyright (c) 2011 Basho Technologies, Inc.  All Rights Reserved.
+%% Copyright (c) 2018 Pivotal Software, Inc.  All rights reserved.
 %%
 %% This file is provided to you under the Apache License,
 %% Version 2.0 (the "License"); you may not use this file
@@ -18,7 +19,7 @@
 %% allow multiple parties/processes/applications to share
 %% erlang:system_monitor/2 system events safely.
 
--module(riak_sysmon_app).
+-module(rabbit_sysmon_app).
 
 -behaviour(application).
 
@@ -46,7 +47,7 @@
 %% @end
 %%--------------------------------------------------------------------
 start(_StartType, _StartArgs) ->
-    case riak_sysmon_sup:start_link() of
+    case rabbit_sysmon_sup:start_link() of
         {ok, _Pid} = Ok ->
             Ok;
         Error ->

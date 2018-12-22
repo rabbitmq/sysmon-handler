@@ -1,4 +1,4 @@
-{application, riak_sysmon,
+{application, rabbit_sysmon,
  [
   {description, "Rate-limiting system_monitor event handler"},
   {vsn, git},
@@ -8,7 +8,7 @@
                   sasl
                  ]},
   {registered, []},
-  {mod, {riak_sysmon_app, []}},
+  {mod, {rabbit_sysmon_app, []}},
   {env, [
         ]}
  ]}.
