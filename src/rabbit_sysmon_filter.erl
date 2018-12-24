@@ -39,11 +39,7 @@
 -export([stop_timer/0, start_timer/0]).        % For testing use only!
 -endif. % TEST
 
--ifdef(long_schedule).
 -define(SUPPORTED_MONITORS, [gc, heap, port, dist_port, schedule]).
--else.
--define(SUPPORTED_MONITORS, [gc, heap, port, dist_port]).
--endif.
 
 -type port_list() :: gb_trees:tree().
 
