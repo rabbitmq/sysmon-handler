@@ -15,10 +15,11 @@
 %% specific language governing permissions and limitations
 %% under the License.
 
--module(rabbit_sysmon_schema_tests).
+-module(rabbit_sysmon_SUITE).
 
--include_lib("eunit/include/eunit.hrl").
--compile(export_all).
+-include_lib("common_test/include/ct.hrl").
+
+-export([all/0, basic_schema/1, override_schema/1]).
 
 -define(DEFAULT_PROCESS_LIMIT, 30).
 -define(DEFAULT_PORT_LIMIT, 2).
@@ -29,11 +30,12 @@
 -define(DEFAULT_BUSY_DIST_PORT, true).
 -define(PLUS1(X), (X+1)).
 
+all() -> [basic_schema, override_schema].
+
 %% basic schema test will check to make sure that all defaults from the schema
 %% make it into the generated app.config
-basic_schema_test() ->
-    %% The defaults are defined in ../priv/rabbit_sysmon.schema. it is the file under test.
-    Config = cuttlefish_unit:generate_config("../priv/rabbit_sysmon.schema", []),
+basic_schema(CT_Config) ->
+    Config = generate_config(CT_Config),
 
     HeapSize = case erlang:system_info(wordsize) of
                    4 -> ?DEFAULT_HEAP_WORD_LIMIT;
@@ -46,13 +48,12 @@ basic_schema_test() ->
     cuttlefish_unit:assert_config(Config, "rabbit_sysmon.schedule_ms_limit", ?DEFAULT_SCHEDULE_MS_LIMIT),
     cuttlefish_unit:assert_config(Config, "rabbit_sysmon.heap_word_limit", HeapSize),
     cuttlefish_unit:assert_config(Config, "rabbit_sysmon.busy_port", ?DEFAULT_BUSY_PORT),
-    cuttlefish_unit:assert_config(Config, "rabbit_sysmon.busy_dist_port", ?DEFAULT_BUSY_DIST_PORT),
-    ok.
+    cuttlefish_unit:assert_config(Config, "rabbit_sysmon.busy_dist_port", ?DEFAULT_BUSY_DIST_PORT).
 
-override_schema_test() ->
-    %% Conf represents the rabbit.conf file that would be read in by cuttlefish.
+override_schema(CT_Config) ->
+    %% CF_Conf represents the rabbit.conf file that would be read in by cuttlefish.
     %% this proplists is what would be output by the conf_parse module
-    Conf = [
+    CF_Conf = [
         {["runtime_health", "thresholds", "busy_processes"], ?PLUS1(?DEFAULT_PROCESS_LIMIT)},
         {["runtime_health", "thresholds", "busy_ports"], ?PLUS1(?DEFAULT_PORT_LIMIT)},
         {["runtime_health", "triggers", "process", "garbage_collection"], "1ms"},
@@ -65,7 +66,7 @@ override_schema_test() ->
     WordSize = erlang:system_info(wordsize),
     HeapSize = (400 * 1024 * 1024) div WordSize,
 
-    Config = cuttlefish_unit:generate_config("../priv/rabbit_sysmon.schema", Conf),
+    Config = generate_config(CT_Config, CF_Conf),
 
     cuttlefish_unit:assert_config(Config, "rabbit_sysmon.process_limit", ?PLUS1(?DEFAULT_PROCESS_LIMIT)),
     cuttlefish_unit:assert_config(Config, "rabbit_sysmon.port_limit", ?PLUS1(?DEFAULT_PORT_LIMIT)),
@@ -73,5 +74,11 @@ override_schema_test() ->
     cuttlefish_unit:assert_config(Config, "rabbit_sysmon.schedule_ms_limit", ?PLUS1(?DEFAULT_SCHEDULE_MS_LIMIT)),
     cuttlefish_unit:assert_config(Config, "rabbit_sysmon.heap_word_limit", HeapSize),
     cuttlefish_unit:assert_config(Config, "rabbit_sysmon.busy_port", not ?DEFAULT_BUSY_PORT),
-    cuttlefish_unit:assert_config(Config, "rabbit_sysmon.busy_dist_port", not ?DEFAULT_BUSY_DIST_PORT),
-    ok.
+    cuttlefish_unit:assert_config(Config, "rabbit_sysmon.busy_dist_port", not ?DEFAULT_BUSY_DIST_PORT).
+
+generate_config(CT_Config) ->
+    generate_config(CT_Config, []).
+
+generate_config(CT_Config, CF_Conf) ->
+    SchemaFile = filename:join(?config(data_dir, CT_Config), "rabbit_sysmon.schema"),
+    cuttlefish_unit:generate_config(SchemaFile, CF_Conf).
