@@ -1,5 +1,13 @@
+# vim:sw=2:et:
+
 sudo: false
+
 language: erlang
+
 otp_release:
   - 21.2
   - 19.3
+
+script:
+  - make xref
+  - make tests
