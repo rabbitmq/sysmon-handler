@@ -1,12 +1,13 @@
 PROJECT = rabbitmq_sysmon
-# PROJECT_DESCRIPTION = RabbitMQ Sysmon Library
-# PROJECT_VERSION = 3.0.0
-# PROJECT_MOD = rabbit_sysmon
+PROJECT_DESCRIPTION = RabbitMQ Sysmon Library
+PROJECT_MOD = rabbit_sysmon_app
 
-## NB: rabbit_sysmon uses a src/rabbit_sysmon.app.src file
+TEST_DEPS = rabbitmq_ct_helpers
 
-dep_cuttlefish = git https://github.com/Kyorai/cuttlefish.git develop
+# FIXME: Use erlang.mk patched for RabbitMQ, while waiting for PRs to be
+# reviewed and merged.
+ERLANG_MK_REPO = https://github.com/rabbitmq/erlang.mk.git
+ERLANG_MK_COMMIT = rabbitmq-tmp
 
-DEPS = lager cuttlefish
-
+include rabbitmq-components.mk
 include erlang.mk

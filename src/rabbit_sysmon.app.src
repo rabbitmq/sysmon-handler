@@ -1,14 +1,8 @@
-{application, rabbit_sysmon,
- [
-  {description, "Rate-limiting system_monitor event handler"},
-  {vsn, git},
-  {applications, [
-                  kernel,
-                  stdlib,
-                  sasl
-                 ]},
-  {registered, []},
-  {mod, {rabbit_sysmon_app, []}},
-  {env, [
-        ]}
+{application, rabbit_sysmon, [
+    {description, "Rate-limiting system_monitor event handler"},
+    {vsn, git},
+    {applications, [kernel, stdlib, sasl]},
+    {registered, []},
+    {mod, {rabbit_sysmon_app, []}},
+    {env, []}
  ]}.
