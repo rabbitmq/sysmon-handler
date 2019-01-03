@@ -5,8 +5,13 @@ sudo: false
 language: erlang
 
 otp_release:
+  - 21.2.2
   - 21.2
   - 19.3
 
+before_script:
+  - kerl list installations
+
 script:
+  - make xref
   - make tests
