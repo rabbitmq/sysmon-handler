@@ -1,4 +1,4 @@
-PROJECT = rabbitmq_sysmon
+PROJECT = rabbit_sysmon
 PROJECT_DESCRIPTION = RabbitMQ Sysmon Library
 PROJECT_MOD = rabbit_sysmon_app
 
