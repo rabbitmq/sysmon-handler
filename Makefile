@@ -1,5 +1,5 @@
 PROJECT = rabbit_sysmon
-PROJECT_DESCRIPTION = RabbitMQ Sysmon Library
+PROJECT_DESCRIPTION = RabbitMQ system_monitor library
 PROJECT_MOD = rabbit_sysmon_app
 
 dep_cuttlefish = git https://github.com/Kyorai/cuttlefish.git develop
