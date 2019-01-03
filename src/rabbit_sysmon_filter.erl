@@ -20,11 +20,13 @@
 %%
 %% See the `README.md' file at the top of the source repository for details.
 
--compile({nowarn_deprecated_function, [{erlang, get_stacktrace, 0}]}).
-
 -module(rabbit_sysmon_filter).
 
 -behaviour(gen_server).
+
+-ifdef(OTP_RELEASE).
+-compile({nowarn_deprecated_function, [{erlang, get_stacktrace, 0}]}).
+-endif.
 
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
