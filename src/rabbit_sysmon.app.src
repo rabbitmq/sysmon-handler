@@ -4,7 +4,7 @@
     {vsn, git},
     {licenses, ["Apache", "MPL"]},
     {links, [{"github", "https://github.com/rabbitmq/rabbitmq-sysmon"}]},
-    {modules,[rabbit_sysmon_app, rabbit_sysmon_filter, rabbit_sysmon_sup]},
+    {modules, [rabbit_sysmon_app, rabbit_sysmon_filter, rabbit_sysmon_sup]},
     {registered, [rabbit_sysmon_sup]},
     {applications, [kernel, stdlib, sasl]},
     {mod, {rabbit_sysmon_app, []}},
