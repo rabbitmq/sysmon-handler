@@ -1,0 +1,14 @@
+{"1.1.0",
+[{<<"cuttlefish">>,
+  {git,"https://github.com/Kyorai/cuttlefish.git",
+       {ref,"74b26900deb7633e4959a0b4b91f6d8855d8a26a"}},
+  0},
+ {<<"getopt">>,{pkg,<<"getopt">>,<<"1.0.1">>},1},
+ {<<"goldrush">>,{pkg,<<"goldrush">>,<<"0.1.9">>},2},
+ {<<"lager">>,{pkg,<<"lager">>,<<"3.6.8">>},1}]}.
+[
+{pkg_hash,[
+ {<<"getopt">>, <<"C73A9FA687B217F2FF79F68A3B637711BB1936E712B521D8CE466B29CBF7808A">>},
+ {<<"goldrush">>, <<"F06E5D5F1277DA5C413E84D5A2924174182FB108DABB39D5EC548B27424CD106">>},
+ {<<"lager">>, <<"897EFC7679BB82383448646C96768CDC4E747464DD18B999C7AACA485686B0DA">>}]}
+].

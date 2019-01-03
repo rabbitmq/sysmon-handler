@@ -15,12 +15,9 @@ ebin/
 .erlang.mk/
 erl_crash.dump
 .eunit
-git-revisions.txt
 logs/
 *.plt
 plugins/
-rebar.config
-rebar.lock
 *.sw?
 .*.sw?
 .sw?
