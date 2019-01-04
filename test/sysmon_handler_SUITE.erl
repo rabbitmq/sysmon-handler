@@ -54,13 +54,13 @@ override_schema(CT_Config) ->
     %% CF_Conf represents the conf file that would be read in by cuttlefish.
     %% this proplists is what would be output by the conf_parse module
     CF_Conf = [
-        {["runtime_health", "thresholds", "busy_processes"], ?PLUS1(?DEFAULT_PROCESS_LIMIT)},
-        {["runtime_health", "thresholds", "busy_ports"], ?PLUS1(?DEFAULT_PORT_LIMIT)},
-        {["runtime_health", "triggers", "process", "garbage_collection"], "1ms"},
-        {["runtime_health", "triggers", "process", "long_schedule"], "1ms"},
-        {["runtime_health", "triggers", "process", "heap_size"], "400MB"},
-        {["runtime_health", "triggers", "port"], off},
-        {["runtime_health", "triggers", "distribution_port"], off}
+        {["sysmon_handler", "thresholds", "busy_processes"], ?PLUS1(?DEFAULT_PROCESS_LIMIT)},
+        {["sysmon_handler", "thresholds", "busy_ports"], ?PLUS1(?DEFAULT_PORT_LIMIT)},
+        {["sysmon_handler", "triggers", "process", "garbage_collection"], "1ms"},
+        {["sysmon_handler", "triggers", "process", "long_scheduled_execution"], "1ms"},
+        {["sysmon_handler", "triggers", "process", "heap_size"], "400MB"},
+        {["sysmon_handler", "triggers", "port"], off},
+        {["sysmon_handler", "triggers", "distribution_port"], off}
     ],
 
     WordSize = erlang:system_info(wordsize),
