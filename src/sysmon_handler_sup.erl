@@ -15,7 +15,7 @@
 %% specific language governing permissions and limitations
 %% under the License.
 
--module(rabbit_sysmon_sup).
+-module(sysmon_handler_sup).
 
 -behaviour(supervisor).
 
@@ -67,10 +67,10 @@ init([]) ->
     Shutdown = 2000,
     Type = worker,
 
-    Filter = {rabbit_sysmon_filter, {rabbit_sysmon_filter, start_link, []},
-              Restart, Shutdown, Type, [rabbit_sysmon_filter]},
-    Handler = {rabbit_sysmon_mgr, {gen_event, start_link,
-                                 [{local, rabbit_sysmon_handler}]},
+    Filter = {sysmon_handler_filter, {sysmon_handler_filter, start_link, []},
+              Restart, Shutdown, Type, [sysmon_handler_filter]},
+    Handler = {sysmon_handler_mgr, {gen_event, start_link,
+                                 [{local, sysmon_handler_handler}]},
               Restart, Shutdown, Type, []},
 
     {ok, {SupFlags, [Filter, Handler]}}.

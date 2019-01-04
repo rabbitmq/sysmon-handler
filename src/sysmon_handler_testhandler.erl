@@ -17,7 +17,7 @@
 
 %% @doc Support for EUnit testing: simple event-collecting event handler.
 
--module(rabbit_sysmon_testhandler).
+-module(sysmon_handler_testhandler).
 
 -ifdef(TEST).
 
