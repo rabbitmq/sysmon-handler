@@ -33,11 +33,11 @@ There can be only one system_monitor process
 The Erlang/OTP documentation is pretty clear on this point: only one process
 can receive `system_monitor` messages. But using the `sysmon_handler` OTP app,
 if multiple parties are interested in receiving `system_monitor` events, each
-party can add an event handler to the `sysmon_handler_handler` event handler.
+party can add an event handler to the `sysmon_handler` event handler.
 
 The event handler process in this application uses the registered name
-`sysmon_handler_handler`. To add your handler, use something like:
-`gen_event:add_sup_handler(sysmon_handler_handler, yourModuleName,
+`sysmon_handler`. To add your handler, use something like:
+`gen_event:add_sup_handler(sysmon_handler, yourModuleName,
 YourInitialArgs)`.
 
 See the [`gen_event` documentation for
@@ -50,7 +50,7 @@ Events sent to custom event handlers
 
 The following events can be sent from the `sysmon_handler`
 filtering/rate-limiting process (a.k.a. `sysmon_handler_filter`) to the
-event handler process (a.k.a. `sysmon_handler_handler`).
+event handler process (a.k.a. `sysmon_handler`).
 
 * `{monitor, pid(), atom(), term()}` ... These are
   `system_monitor` messages as they are received verbatim by the

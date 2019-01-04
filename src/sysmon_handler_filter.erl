@@ -98,7 +98,7 @@ start_link(MonitorProps) ->
 %% a usage example.
 
 add_custom_handler(Module, Args) ->
-    gen_event:add_sup_handler(sysmon_handler_handler, Module, Args).
+    gen_event:add_sup_handler(sysmon_handler, Module, Args).
 
 call_custom_handler(Module, Call) ->
     call_custom_handler(Module, Call, infinity).
@@ -111,7 +111,7 @@ call_custom_handler(Module, Call) ->
 %% a usage example.
 
 call_custom_handler(Module, Call, Timeout) ->
-    gen_event:call(sysmon_handler_handler, Module, Call, Timeout).
+    gen_event:call(sysmon_handler, Module, Call, Timeout).
 
 %%%===================================================================
 %%% gen_server callbacks
@@ -205,7 +205,7 @@ handle_info({monitor, _, ProcType, _} = Info,
   when ProcType == long_gc; ProcType == large_heap; ProcType == long_schedule ->
     NewProcs = Procs + 1,
     if NewProcs =< ProcLimit ->
-            gen_event:notify(sysmon_handler_handler, Info);
+            gen_event:notify(sysmon_handler, Info);
        true ->
             ok
     end,
@@ -222,7 +222,7 @@ handle_info({monitor, X, PortType, Port},
             PortListLen = gb_trees:size(PortList),
             if PortListLen < PortLimit ->
                     PortAndMore = annotate_dist_port(PortType, Port, State),
-                    gen_event:notify(sysmon_handler_handler,
+                    gen_event:notify(sysmon_handler,
                                      {monitor, X, PortType, PortAndMore});
                true ->
                     ok
@@ -237,13 +237,13 @@ handle_info({monitor, _, _, _} = Info, #state{bogus_msg_p = false} = State) ->
 handle_info(reset, #state{proc_count = Procs, proc_limit = ProcLimit,
                           port_count = Ports, port_limit = PortLimit} = State)->
     if Procs > ProcLimit ->
-            gen_event:notify(sysmon_handler_handler,
+            gen_event:notify(sysmon_handler,
                              {suppressed, proc_events, Procs - ProcLimit});
        true ->
             ok
     end,
     if Ports > PortLimit ->
-            gen_event:notify(sysmon_handler_handler,
+            gen_event:notify(sysmon_handler,
                              {suppressed, port_events, Ports - PortLimit});
        true ->
             ok
@@ -395,7 +395,7 @@ limit_test() ->
 
     ProcLimit = 10,
     PortLimit = 9,
-    EventHandler = sysmon_handler_handler,
+    EventHandler = sysmon_handler,
     TestHandler = sysmon_handler_testhandler,
     {ok, _NetkernelPid} = net_kernel:start([?MODULE, shortnames]),
 

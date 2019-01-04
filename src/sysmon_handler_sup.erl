@@ -70,7 +70,7 @@ init([]) ->
     Filter = {sysmon_handler_filter, {sysmon_handler_filter, start_link, []},
               Restart, Shutdown, Type, [sysmon_handler_filter]},
     Handler = {sysmon_handler_mgr, {gen_event, start_link,
-                                 [{local, sysmon_handler_handler}]},
+                                 [{local, sysmon_handler}]},
               Restart, Shutdown, Type, []},
 
     {ok, {SupFlags, [Filter, Handler]}}.
