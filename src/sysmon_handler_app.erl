@@ -15,11 +15,11 @@
 %% specific language governing permissions and limitations
 %% under the License.
 
-%% @doc rabbit_sysmon: a rate-limiting, gen_event-based mechanism to
+%% @doc sysmon_handler: a rate-limiting, gen_event-based mechanism to
 %% allow multiple parties/processes/applications to share
 %% erlang:system_monitor/2 system events safely.
 
--module(rabbit_sysmon_app).
+-module(sysmon_handler_app).
 
 -behaviour(application).
 
@@ -47,7 +47,7 @@
 %% @end
 %%--------------------------------------------------------------------
 start(_StartType, _StartArgs) ->
-    case rabbit_sysmon_sup:start_link() of
+    case sysmon_handler_sup:start_link() of
         {ok, _Pid} = Ok ->
             Ok;
         Error ->

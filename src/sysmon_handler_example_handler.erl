@@ -16,9 +16,9 @@
 %% under the License.
 
 %% @doc A simple example for adding a custom event handler (this module)
-%% to the `rabbit_sysmon' application's `system_monitor' event manager.
+%% to the `sysmon_handler' application's `system_monitor' event manager.
 
--module(rabbit_sysmon_example_handler).
+-module(sysmon_handler_example_handler).
 
 -behaviour(gen_event).
 
@@ -38,10 +38,10 @@
 %%%===================================================================
 
 add_handler() ->
-    rabbit_sysmon_filter:add_custom_handler(?MODULE, []).
+    sysmon_handler_filter:add_custom_handler(?MODULE, []).
 
 get_call_count() ->
-    rabbit_sysmon_filter:call_custom_handler(?MODULE, get_call_count, infinity).
+    sysmon_handler_filter:call_custom_handler(?MODULE, get_call_count, infinity).
 
 %%%===================================================================
 %%% gen_event callbacks

@@ -20,7 +20,7 @@
 %%
 %% See the `README.md' file at the top of the source repository for details.
 
--module(rabbit_sysmon_filter).
+-module(sysmon_handler_filter).
 
 -behaviour(gen_server).
 
@@ -72,18 +72,18 @@
 start_link() ->
     start_link(?SUPPORTED_MONITORS).
 
-%% @doc Start rabbit_sysmon filter process
+%% @doc Start sysmon_handler filter process
 %%
 %% The `MonitorProps' arg is a property list that may contain zero
 %% or more of the following atoms:
 %% <ul>
 %% <li> <b>gc</b> Enable long garbage collection events.
 %%      The minimum time (in milliseconds) is defined by the application
-%%      `rabbit_sysmon' environment variable `gc_ms_limit'.
+%%      `sysmon_handler' environment variable `gc_ms_limit'.
 %%      </li>
 %% <li> <b>heap</b> Enable process large heap events. </li>
 %%      The minimum size (in machine words) is defined by the application
-%%      `rabbit_sysmon' environment variable `process_heap_limit'.
+%%      `sysmon_handler' environment variable `process_heap_limit'.
 %% <li> <b>busy_port</b> Enable `busy_port' events. </li>
 %% <li> <b>busy_dist_port</b> Enable `busy_dist_port' events. </li>
 %% </ul>
@@ -91,27 +91,27 @@ start_link() ->
 start_link(MonitorProps) ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, MonitorProps, []).
 
-%% @doc Add a custom handler module to the `rabbit_sysmon'.
+%% @doc Add a custom handler module to the `sysmon_handler'.
 %%
 %% See the source code of the
-%% {@link rabbit_sysmon_example_handler:add_handler/0} function for
+%% {@link sysmon_handler_example_handler:add_handler/0} function for
 %% a usage example.
 
 add_custom_handler(Module, Args) ->
-    gen_event:add_sup_handler(rabbit_sysmon_handler, Module, Args).
+    gen_event:add_sup_handler(sysmon_handler_handler, Module, Args).
 
 call_custom_handler(Module, Call) ->
     call_custom_handler(Module, Call, infinity).
 
-%% @doc Make a synchronous call to a `rabbit_sysmon' specific custom
+%% @doc Make a synchronous call to a `sysmon_handler' specific custom
 %% event handler.
 %%
 %% See the source code of the
-%% {@link rabbit_sysmon_example_handler:get_call_count/0} function for
+%% {@link sysmon_handler_example_handler:get_call_count/0} function for
 %% a usage example.
 
 call_custom_handler(Module, Call, Timeout) ->
-    gen_event:call(rabbit_sysmon_handler, Module, Call, Timeout).
+    gen_event:call(sysmon_handler_handler, Module, Call, Timeout).
 
 %%%===================================================================
 %%% gen_server callbacks
@@ -205,7 +205,7 @@ handle_info({monitor, _, ProcType, _} = Info,
   when ProcType == long_gc; ProcType == large_heap; ProcType == long_schedule ->
     NewProcs = Procs + 1,
     if NewProcs =< ProcLimit ->
-            gen_event:notify(rabbit_sysmon_handler, Info);
+            gen_event:notify(sysmon_handler_handler, Info);
        true ->
             ok
     end,
@@ -222,7 +222,7 @@ handle_info({monitor, X, PortType, Port},
             PortListLen = gb_trees:size(PortList),
             if PortListLen < PortLimit ->
                     PortAndMore = annotate_dist_port(PortType, Port, State),
-                    gen_event:notify(rabbit_sysmon_handler,
+                    gen_event:notify(sysmon_handler_handler,
                                      {monitor, X, PortType, PortAndMore});
                true ->
                     ok
@@ -237,13 +237,13 @@ handle_info({monitor, _, _, _} = Info, #state{bogus_msg_p = false} = State) ->
 handle_info(reset, #state{proc_count = Procs, proc_limit = ProcLimit,
                           port_count = Ports, port_limit = PortLimit} = State)->
     if Procs > ProcLimit ->
-            gen_event:notify(rabbit_sysmon_handler,
+            gen_event:notify(sysmon_handler_handler,
                              {suppressed, proc_events, Procs - ProcLimit});
        true ->
             ok
     end,
     if Ports > PortLimit ->
-            gen_event:notify(rabbit_sysmon_handler,
+            gen_event:notify(sysmon_handler_handler,
                              {suppressed, port_events, Ports - PortLimit});
        true ->
             ok
@@ -298,10 +298,10 @@ code_change(_OldVsn, State, _Extra) ->
 %% To disable forwarding events of a particular type, use a limit of 0.
 
 get_proc_limit() ->
-    nonzero_app_env(rabbit_sysmon, process_limit, 30).
+    nonzero_app_env(sysmon_handler, process_limit, 30).
 
 get_port_limit() ->
-    nonzero_app_env(rabbit_sysmon, port_limit, 30).
+    nonzero_app_env(sysmon_handler, port_limit, 30).
 
 %% The default limits below here are more of educated guesses than
 %% based on hard experience.  Practical upper limits can vary quite a
@@ -309,20 +309,20 @@ get_port_limit() ->
 %% experimentation.
 
 get_gc_ms_limit() ->
-    nonzero_app_env(rabbit_sysmon, gc_ms_limit, 50).
+    nonzero_app_env(sysmon_handler, gc_ms_limit, 50).
 
 get_heap_word_limit() ->
     %% 10 Mwords = 40MB on a 32-bit VM, 80MB on a 64-bit VM
-    nonzero_app_env(rabbit_sysmon, heap_word_limit, 10*1024*1024).
+    nonzero_app_env(sysmon_handler, heap_word_limit, 10*1024*1024).
 
 get_busy_port() ->
-    boolean_app_env(rabbit_sysmon, busy_port, true).
+    boolean_app_env(sysmon_handler, busy_port, true).
 
 get_busy_dist_port() ->
-    boolean_app_env(rabbit_sysmon, busy_dist_port, true).
+    boolean_app_env(sysmon_handler, busy_dist_port, true).
 
 get_schedule_ms_limit() ->
-    nonzero_app_env(rabbit_sysmon, schedule_ms_limit, 50).
+    nonzero_app_env(sysmon_handler, schedule_ms_limit, 50).
 
 nonzero_app_env(App, Key, Default) ->
     case application:get_env(App, Key) of
@@ -395,20 +395,20 @@ limit_test() ->
 
     ProcLimit = 10,
     PortLimit = 9,
-    EventHandler = rabbit_sysmon_handler,
-    TestHandler = rabbit_sysmon_testhandler,
+    EventHandler = sysmon_handler_handler,
+    TestHandler = sysmon_handler_testhandler,
     {ok, _NetkernelPid} = net_kernel:start([?MODULE, shortnames]),
 
     %% Setup part 1: filter server
 
     catch exit(whereis(?MODULE), kill),
     timer:sleep(10),
-    application:set_env(rabbit_sysmon, process_limit, ProcLimit),
-    application:set_env(rabbit_sysmon, port_limit, PortLimit),
+    application:set_env(sysmon_handler, process_limit, ProcLimit),
+    application:set_env(sysmon_handler, port_limit, PortLimit),
     %% Use huge limits to avoid unexpected messages that could confuse us.
-    application:set_env(rabbit_sysmon, gc_ms_limit, 999999999),
-    application:set_env(rabbit_sysmon, heap_word_limit, 999999999),
-    application:set_env(rabbit_sysmon, schedule_ms_limit, 999999999),
+    application:set_env(sysmon_handler, gc_ms_limit, 999999999),
+    application:set_env(sysmon_handler, heap_word_limit, 999999999),
+    application:set_env(sysmon_handler, schedule_ms_limit, 999999999),
     {ok, _FilterPid} = ?MODULE:start_link(),
     ?MODULE:stop_timer(),
 
