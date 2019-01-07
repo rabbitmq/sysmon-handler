@@ -15,4 +15,4 @@ script:
   - make xref
   - make tests
   - rebar3 eunit
-  - rebar3 ct
+  - rebar3 ct --readable=false
