@@ -397,7 +397,12 @@ limit_test() ->
     PortLimit = 9,
     EventHandler = sysmon_handler,
     TestHandler = sysmon_handler_testhandler,
-    {ok, _NetkernelPid} = net_kernel:start([?MODULE, shortnames]),
+    case net_kernel:start([?MODULE, shortnames]) of
+        {ok, _NetkernelPid} ->
+            ok;
+        {error, {already_started, _NetKernelPid}} ->
+            ok
+    end,
 
     %% Setup part 1: filter server
 
