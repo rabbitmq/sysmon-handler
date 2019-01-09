@@ -27,8 +27,8 @@ This app will use two processes for `system_monitor` message handling.
 respond to `system_monitor` events that pass through the first stage
 filter.
 
-There can be only one system_monitor process
---------------------------------------------
+There can be only one `system_monitor` process
+----------------------------------------------
 
 The Erlang/OTP documentation is pretty clear on this point: only one process
 can receive `system_monitor` messages. But using the `sysmon_handler` OTP app,
@@ -60,3 +60,11 @@ event handler process (a.k.a. `sysmon_handler`).
   messages inform your event handler that `Num` events of a certain type
   (`proc_events` or `port_events`) were suppressed in the last second
   (i.e. their arrival rate exceeded the configured rate limit).
+
+Change Log
+----------
+
+| Version  | Changes
+|----------|-----------------------------------------------------------
+| `v1.1.0` | Change the `heap_size` cuttlefish default to be 80MiB on 64-bit systems, which is in line with the default word count limit. Cuttlefish default for `garbage_collect` is changed to `50ms` which is in line with the default if unset. Cuttlefish default for `scheduled_execution` also changed to `50ms`, also in line with the default if unset
+| `v1.0.0` | Initial release.

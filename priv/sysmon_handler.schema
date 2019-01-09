@@ -20,12 +20,9 @@
 
 %% @doc A process will become busy when it exceeds this amount of time
 %% doing garbage collection.
-%%
-%% NOTE: Enabling this setting can cause performance problems on
-%% multi-core systems.
 %% @see sysmon_handler.thresholds.busy_processes
 {mapping, "sysmon_handler.triggers.process.garbage_collection", "sysmon_handler.gc_ms_limit", [
-  {default, off},
+  {default, 50},
   {datatype, [{atom, off},
               {duration, ms}]},
   hidden
@@ -42,7 +39,7 @@
 %% @doc A process will become busy when it exceeds this amount of time
 %% during a single process scheduling & execution cycle.
 {mapping, "sysmon_handler.triggers.process.long_scheduled_execution", "sysmon_handler.schedule_ms_limit", [
-  {default, off},
+  {default, 50},
   {datatype, [{atom, off},
               {duration, ms}]},
   hidden
@@ -59,8 +56,9 @@
 %% @doc A process will become busy when its heap exceeds this size.
 %% @see sysmon_handler.thresholds.busy_processes
 {mapping, "sysmon_handler.triggers.process.heap_size", "sysmon_handler.heap_word_limit", [
-  {default, "160444000"},
-  {datatype, [bytesize, {atom, off}]},
+  {default, "83886080"},
+  {datatype, [{atom, off},
+              bytesize]},
   hidden
 ]}.
 

@@ -24,6 +24,8 @@
 
 -behaviour(gen_server).
 
+-include("sysmon_handler.hrl").
+
 -ifdef(OTP_RELEASE).
 -compile({nowarn_deprecated_function, [{erlang, get_stacktrace, 0}]}).
 -endif.
@@ -35,13 +37,15 @@
 %% API
 -export([start_link/0, start_link/1]).
 -export([add_custom_handler/2, call_custom_handler/2, call_custom_handler/3]).
+-export([get_config/0]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
+
 -ifdef(TEST).
--export([stop_timer/0, start_timer/0]).        % For testing use only!
--endif. % TEST
+-export([stop_timer/0, start_timer/0]).
+-endif.
 
 -define(SUPPORTED_MONITORS, [gc, heap, port, dist_port, schedule]).
 
@@ -61,6 +65,22 @@
 %%%===================================================================
 %%% API
 %%%===================================================================
+
+%%--------------------------------------------------------------------
+%% @doc
+%% Gets configuration
+%%
+%% @spec get_config() -> list({atom(), term()})
+%% @end
+%%--------------------------------------------------------------------
+get_config() ->
+    [{proc_limit, get_proc_limit()},
+     {port_limit, get_port_limit()},
+     {gc_ms_limit, get_gc_ms_limit()},
+     {schedule_ms_limit, get_schedule_ms_limit()},
+     {heap_word_limit, get_heap_word_limit()},
+     {busy_port, get_busy_port()},
+     {busy_dist_port, get_busy_dist_port()}].
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -298,10 +318,10 @@ code_change(_OldVsn, State, _Extra) ->
 %% To disable forwarding events of a particular type, use a limit of 0.
 
 get_proc_limit() ->
-    nonzero_app_env(sysmon_handler, process_limit, 30).
+    nonzero_app_env(sysmon_handler, process_limit, ?DEFAULT_PROCESS_LIMIT).
 
 get_port_limit() ->
-    nonzero_app_env(sysmon_handler, port_limit, 30).
+    nonzero_app_env(sysmon_handler, port_limit, ?DEFAULT_PORT_LIMIT).
 
 %% The default limits below here are more of educated guesses than
 %% based on hard experience.  Practical upper limits can vary quite a
@@ -309,20 +329,21 @@ get_port_limit() ->
 %% experimentation.
 
 get_gc_ms_limit() ->
-    nonzero_app_env(sysmon_handler, gc_ms_limit, 50).
+    nonzero_app_env(sysmon_handler, gc_ms_limit, ?DEFAULT_GC_MS_LIMIT).
 
 get_heap_word_limit() ->
+    %% return value is number of words, which is architecture-dependent
     %% 10 Mwords = 40MB on a 32-bit VM, 80MB on a 64-bit VM
-    nonzero_app_env(sysmon_handler, heap_word_limit, 10*1024*1024).
+    nonzero_app_env(sysmon_handler, heap_word_limit, ?DEFAULT_HEAP_WORD_LIMIT).
 
 get_busy_port() ->
-    boolean_app_env(sysmon_handler, busy_port, true).
+    boolean_app_env(sysmon_handler, busy_port, ?DEFAULT_BUSY_PORT).
 
 get_busy_dist_port() ->
-    boolean_app_env(sysmon_handler, busy_dist_port, true).
+    boolean_app_env(sysmon_handler, busy_dist_port, ?DEFAULT_BUSY_DIST_PORT).
 
 get_schedule_ms_limit() ->
-    nonzero_app_env(sysmon_handler, schedule_ms_limit, 50).
+    nonzero_app_env(sysmon_handler, schedule_ms_limit, ?DEFAULT_SCHEDULE_MS_LIMIT).
 
 nonzero_app_env(App, Key, Default) ->
     case application:get_env(App, Key) of
