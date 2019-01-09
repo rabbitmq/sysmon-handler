@@ -24,13 +24,15 @@
 -export([all/0,
          default_values/1,
          basic_schema/1,
-         override_schema/1]).
+         override_some_schema/1,
+         override_all_schema/1]).
 
 -define(PLUS1(X), (X+1)).
 
 all() -> [default_values,
           basic_schema,
-          override_schema].
+          override_some_schema,
+          override_all_schema].
 
 %% default values test ensures that the hard-coded defaults in this library
 %% are sane
@@ -44,24 +46,50 @@ default_values(_CT_Config) ->
      {busy_dist_port, ?DEFAULT_BUSY_DIST_PORT}] = sysmon_handler_filter:get_config().
 
 
-%% basic schema test will check to make sure that all defaults from the schema
-%% make it into the generated app.config
+%% basic schema test will check to make sure that all values are not configured
+%% in the default schema
 basic_schema(CT_Config) ->
-    Config = generate_config(CT_Config),
+    [] = generate_config(CT_Config).
+
+override_some_schema(CT_Config) ->
+    %% CF_Conf represents the conf file that would be read in by cuttlefish.
+    %% this proplists is what would be output by the conf_parse module
+    CF_Conf = [
+        {["sysmon_handler", "thresholds", "busy_processes"], ?PLUS1(?DEFAULT_PROCESS_LIMIT)},
+        {["sysmon_handler", "triggers", "process", "garbage_collection"], "1ms"},
+        {["sysmon_handler", "triggers", "process", "heap_size"], "400MB"},
+        {["sysmon_handler", "triggers", "distribution_port"], off}
+    ],
 
     WordSize = erlang:system_info(wordsize),
-    % Note: cuttlefish schema default is 83886080
-    HeapWordLimit = (8 * 10 * 1024 * 1024) div WordSize,
+    HeapWordLimit = (400 * 1024 * 1024) div WordSize,
+    BusyDistPortValue = not ?DEFAULT_BUSY_DIST_PORT,
 
-    cuttlefish_unit:assert_config(Config, "sysmon_handler.process_limit", ?DEFAULT_PROCESS_LIMIT),
-    cuttlefish_unit:assert_config(Config, "sysmon_handler.port_limit", ?DEFAULT_PORT_LIMIT),
-    cuttlefish_unit:assert_config(Config, "sysmon_handler.gc_ms_limit", ?DEFAULT_GC_MS_LIMIT),
-    cuttlefish_unit:assert_config(Config, "sysmon_handler.schedule_ms_limit", ?DEFAULT_SCHEDULE_MS_LIMIT),
+    Config = generate_config(CT_Config, CF_Conf),
+    [{sysmon_handler, Configs}] = Config,
+    4 = length(Configs),
+    cuttlefish_unit:assert_config(Config, "sysmon_handler.process_limit", ?PLUS1(?DEFAULT_PROCESS_LIMIT)),
+    cuttlefish_unit:assert_config(Config, "sysmon_handler.gc_ms_limit", 1),
     cuttlefish_unit:assert_config(Config, "sysmon_handler.heap_word_limit", HeapWordLimit),
-    cuttlefish_unit:assert_config(Config, "sysmon_handler.busy_port", ?DEFAULT_BUSY_PORT),
-    cuttlefish_unit:assert_config(Config, "sysmon_handler.busy_dist_port", ?DEFAULT_BUSY_DIST_PORT).
+    cuttlefish_unit:assert_config(Config, "sysmon_handler.busy_dist_port", BusyDistPortValue),
 
-override_schema(CT_Config) ->
+    lists:foreach(fun({C, V}) ->
+                          application:set_env(sysmon_handler, C, V)
+                  end, Configs),
+
+    [{proc_limit, ?PLUS1(?DEFAULT_PROCESS_LIMIT)},
+     {port_limit, ?DEFAULT_PORT_LIMIT},
+     {gc_ms_limit, 1},
+     {schedule_ms_limit, ?DEFAULT_SCHEDULE_MS_LIMIT},
+     {heap_word_limit, HeapWordLimit},
+     {busy_port, ?DEFAULT_BUSY_PORT},
+     {busy_dist_port, BusyDistPortValue}] = sysmon_handler_filter:get_config(),
+
+    lists:foreach(fun({C, _V}) ->
+                          application:unset_env(sysmon_handler, C)
+                  end, Configs).
+
+override_all_schema(CT_Config) ->
     %% CF_Conf represents the conf file that would be read in by cuttlefish.
     %% this proplists is what would be output by the conf_parse module
     CF_Conf = [
