@@ -41,7 +41,7 @@ The event handler process in this application uses the registered name
 YourInitialArgs)`.
 
 See the [`gen_event` documentation for
-`add_sup_event/3`](http://www.erlang.org/doc/man/gen_event.html#add_sup_handler-3)
+`add_sup_event/3`](https://www.erlang.org/doc/man/gen_event.html#add_sup_handler-3)
 for API details. See the example event handler module in the source repository,
 `src/sysmon_handler_example_handler.erl`, for example usage.
 
