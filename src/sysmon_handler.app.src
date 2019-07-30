@@ -2,7 +2,7 @@
 
 {application, sysmon_handler, [
     {description, "Rate-limiting system_monitor event handler"},
-    {vsn, "1.1.1"},
+    {vsn, "1.2.0"},
     {licenses, ["Apache", "MPL"]},
     {links, [{"GitHub", "https://github.com/rabbitmq/sysmon-handler"}]},
     {modules, []},
