@@ -13,8 +13,7 @@ before_script:
   - kerl list installations
 
 script:
-  - make xref
-  - make tests
+  - rebar3 xref
   - rebar3 eunit
   - rebar3 ct --readable=false
   - rebar3 dialyzer
