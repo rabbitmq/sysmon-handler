@@ -67,5 +67,6 @@ Change Log
 
 | Version  | Changes
 |----------|-----------------------------------------------------------
+| `v1.1.1` | Do not report an error if Erlang distribution is stopped. Require Erlang 21.x.
 | `v1.1.0` | Change the `heap_size` cuttlefish default to be 80MiB on 64-bit systems, which is in line with the default word count limit. Cuttlefish default for `garbage_collect` is changed to `50ms` which is in line with the default if unset. Cuttlefish default for `scheduled_execution` also changed to `50ms`, also in line with the default if unset
 | `v1.0.0` | Initial release.
