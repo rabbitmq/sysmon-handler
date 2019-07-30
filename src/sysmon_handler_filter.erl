@@ -395,8 +395,14 @@ get_node_map() ->
                 end
          end || T <- ets:tab2list(sys_dist)]
     catch X:Y ->
-            error_logger:error_msg("~s:get_node_map: ~p ~p @ ~p\n",
-                                   [?MODULE, X, Y, erlang:get_stacktrace()]),
+            %% Check if the `sys_dist` table exists in the first place:
+            %% if Erlang distribution is stopped currently, it doesn't.
+            case ets:whereis(sys_dist) of
+                undefined -> ok;
+                _         -> error_logger:error_msg(
+                               "~s:get_node_map: ~p ~p @ ~p\n",
+                               [?MODULE, X, Y, erlang:get_stacktrace()])
+            end,
             []
     end.
 
