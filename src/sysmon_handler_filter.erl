@@ -26,10 +26,6 @@
 
 -include("sysmon_handler.hrl").
 
--ifdef(OTP_RELEASE).
--compile({nowarn_deprecated_function, [{erlang, get_stacktrace, 0}]}).
--endif.
-
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
 -endif. % TEST
@@ -394,14 +390,14 @@ get_node_map() ->
                      {bummer, bummer}
                 end
          end || T <- ets:tab2list(sys_dist)]
-    catch X:Y ->
+    catch X:Y:Stacktrace ->
             %% Check if the `sys_dist` table exists in the first place:
             %% if Erlang distribution is stopped currently, it doesn't.
             case ets:whereis(sys_dist) of
                 undefined -> ok;
                 _         -> error_logger:error_msg(
                                "~s:get_node_map: ~p ~p @ ~p\n",
-                               [?MODULE, X, Y, erlang:get_stacktrace()])
+                               [?MODULE, X, Y, Stacktrace])
             end,
             []
     end.
