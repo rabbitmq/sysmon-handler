@@ -1,9 +1,7 @@
 # vim:sw=2:et:
 
-sudo: false
-
 language: erlang
-
+sudo: false
 otp_release:
   - 22.0
   - 21.3
@@ -17,3 +15,13 @@ script:
   - rebar3 eunit
   - rebar3 ct --readable=false
   - rebar3 dialyzer
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+
+cache:
+  directories:
+    - $HOME/.cache/rebar3/hex/default
+    - $HOME/_build/default/rebar3_${TRAVIS_OTP_RELEASE}_plt
