@@ -5,7 +5,8 @@ sudo: false
 language: erlang
 
 otp_release:
-  - 21.2
+  - 22.0
+  - 21.3
   - 19.3
 
 before_script:
@@ -16,3 +17,4 @@ script:
   - make tests
   - rebar3 eunit
   - rebar3 ct --readable=false
+  - rebar3 dialyzer
