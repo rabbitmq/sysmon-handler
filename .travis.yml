@@ -3,8 +3,8 @@
 language: erlang
 sudo: false
 otp_release:
-  - 22.0
-  - 21.3
+  - 23.1
+  - 22.3
 
 before_script:
   - kerl list installations
