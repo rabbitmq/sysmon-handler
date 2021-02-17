@@ -1,9 +1,10 @@
 # vim:sw=2:et:
 
 language: erlang
+dist: bionic
 sudo: false
 otp_release:
-  - "23.1.2'
+  - "23.0'
   - "22.3"
 
 before_script:
